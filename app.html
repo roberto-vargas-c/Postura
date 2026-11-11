@@ -1,0 +1,631 @@
+<title>Postura</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>try{const t=localStorage.getItem('postura.theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch{}</script>
+<style id="app-style">
+/* Layout: one narrow column like a clinician's clipboard; photos sit on a plumb-line grid. */
+:root {
+  --paper: #EFEBE4; --surface: #F8F6F2; --ink: #23302A; --muted: #6D7468; --line: #DCD7CD;
+  --accent: #9C5A3C; --accent-ink: #FBF7F2; --accent-soft: #EBDCD2; --brass: #B9822A;
+  --brand: #2F4A3B; --brand-ink: #F3F1EA; --sand: #B5C2AE;
+  --good: #5B8C5A; --mild: #B9822A; --notable: #BF4530;
+  --good-bg: #E1E9DC; --mild-bg: #F2E6D0; --notable-bg: #F4DDD5;
+  --stage: #1E2621;
+  --shadow: 0 1px 2px rgba(30,45,35,.06), 0 8px 24px -12px rgba(30,45,35,.25);
+  --f-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 18px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #141A16; --surface: #1D241F; --ink: #E7EBE3; --muted: #9BA597; --line: #313A33;
+  --accent: #D39274; --accent-ink: #22140D; --accent-soft: #3A2A21; --brass: #E0A64B;
+  --brand: #B8CDB8; --brand-ink: #14201A; --sand: #9DAE95;
+  --good: #7FB37E; --mild: #E0A64B; --notable: #EE6D58;
+  --good-bg: #1F2E22; --mild-bg: #33291A; --notable-bg: #3A201B; --stage: #0F1310;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #141A16; --surface: #1D241F; --ink: #E7EBE3; --muted: #9BA597; --line: #313A33;
+  --accent: #D39274; --accent-ink: #22140D; --accent-soft: #3A2A21; --brass: #E0A64B;
+  --brand: #B8CDB8; --brand-ink: #14201A; --sand: #9DAE95;
+  --good: #7FB37E; --mild: #E0A64B; --notable: #EE6D58;
+  --good-bg: #1F2E22; --mild-bg: #33291A; --notable-bg: #3A201B; --stage: #0F1310;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6); color-scheme: dark }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--paper); background-image: radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb, var(--sand) 22%, transparent), transparent 70%); background-attachment: fixed; color: var(--ink); font-family: var(--f-body); font-size: 15.5px; line-height: 1.5; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 12px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.01em; font-weight: 400; }
+h1 { font-size: clamp(2rem, 7vw, 3rem); font-weight: 400; color: var(--brand); }
+h2 { font-size: clamp(1.6rem, 5vw, 2.1rem); font-weight: 400; }
+h3 { font-size: 1.25rem; font-weight: 400; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.eyebrow { font-family: var(--f-body); font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .09em; color: var(--accent); }
+button, .btn { font: inherit; cursor: pointer; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; text-decoration: none; }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:focus-visible, .link:focus-visible, input:focus-visible, .hist-item:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+.link { background: none; border: 0; color: var(--accent); text-decoration: underline; padding: 4px 0; font: inherit; justify-self: start; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding: 20px; display: grid; gap: 14px; }
+
+/* Top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 400; font-size: 1.5rem; color: var(--brand); }
+.mark { width: 30px; height: 30px; flex: none; }
+#steps { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0; font-family: var(--f-mono); font-size: .72rem; color: var(--muted); }
+#steps li { padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
+#steps li.done { color: var(--accent); border-color: var(--accent); }
+#steps li.current { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+@media (max-width: 480px) { #steps li:not(.current) { display: none; } }
+
+/* Home */
+.hero { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center; padding-block: 18px 4px; }
+.hero p.lede { font-size: 1.1rem; color: var(--muted); max-width: 34ch; margin-top: 12px; }
+.hero-fig { width: 132px; }
+@media (max-width: 520px) { .hero { grid-template-columns: 1fr; } .hero-fig { display: none; } }
+.regions-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; }
+.regions-list li { font-size: .85rem; padding: 4px 10px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
+.agree { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 14px; border-radius: 10px; background: var(--mild-bg); }
+.agree input { width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--accent); }
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 700; }
+.field input { font: inherit; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); width: 100%; max-width: 220px; }
+.field small { color: var(--muted); }
+
+/* Prep */
+.tips { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); padding: 0; margin: 0; list-style: none; }
+.tips li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 4px; }
+.tips b { font-family: var(--f-display); font-size: 1.05rem; }
+.tips span { color: var(--muted); font-size: .95rem; }
+
+/* Capture */
+.cap-grid { display: grid; grid-template-columns: minmax(0, 1fr) 160px; gap: 20px; align-items: start; }
+@media (max-width: 560px) { .cap-grid { grid-template-columns: minmax(0, 1fr) 96px; gap: 12px; } }
+.cap-grid ol { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.guide-fig { background: var(--stage); border-radius: var(--r); padding: 10px; }
+.guide-fig svg { display: block; width: 100%; height: auto; }
+.choose { display: grid; gap: 10px; }
+.file-btn { position: relative; overflow: hidden; }
+.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.stage { position: relative; background: var(--stage); border-radius: var(--r); overflow: hidden; max-height: 72vh; display: grid; place-items: center; }
+.stage video, .stage canvas { display: block; max-width: 100%; max-height: 72vh; width: auto; height: auto; grid-area: 1 / 1; }
+.stage.mirror video, .stage.mirror canvas { transform: scaleX(-1); }
+.stage .frame { position: absolute; inset: 4% 22%; border: 2px dashed rgba(255,255,255,.35); border-radius: 18px; pointer-events: none; }
+#live-status { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 1.05rem; background: rgba(0,0,0,.66); color: #fff; white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
+#live-status[data-tone="ok"] { background: #2F4A3B; }
+.review-wrap canvas { width: 100%; height: auto; max-height: 70vh; object-fit: contain; border-radius: var(--r); background: var(--stage); display: block; }
+.issues { padding: 14px 16px; border-radius: 10px; display: grid; gap: 6px; }
+.issues ul { margin: 0; padding-left: 1.2em; }
+.issues.ok { background: var(--good-bg); }
+.issues.warn { background: var(--mild-bg); }
+
+/* Busy + toast */
+#busy { position: fixed; inset: 0; background: color-mix(in srgb, var(--paper) 82%, transparent); display: grid; place-items: center; z-index: 30; }
+#busy[hidden] { display: none !important; }
+.spin { width: 44px; height: 44px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--accent); animation: sp 0.9s linear infinite; margin: 0 auto 12px; }
+@keyframes sp { to { transform: rotate(360deg); } }
+#toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 12px; z-index: 40; max-width: calc(100% - 32px); }
+#flash { position: fixed; inset: 0; background: #fff; z-index: 35; opacity: 0; pointer-events: none; }
+#flash.go { animation: fl .45s ease-out; }
+@keyframes fl { 0% { opacity: .85; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } #flash.go { animation: none; } }
+
+/* Report */
+.example-flag { background: var(--mild-bg); border: 1px dashed var(--mild); padding: 10px 14px; border-radius: 10px; font-weight: 700; }
+.r-head { display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 20px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; }
+@media (max-width: 520px) { .r-head { grid-template-columns: minmax(0, 1fr) 104px; gap: 12px; padding: 16px; } }
+.r-title { display: grid; gap: 8px; min-width: 0; }
+.r-meta { color: var(--muted); font-size: .9rem; }
+.r-counts { display: flex; flex-wrap: wrap; gap: 14px; list-style: none; padding: 0; margin: 0; font-size: .9rem; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.dot.good, .h-bars i.good { background: var(--good); } .dot.mild, .h-bars i.mild { background: var(--mild); } .dot.notable, .h-bars i.notable { background: var(--notable); }
+.gauge { width: 100%; height: auto; }
+.g-track { fill: none; stroke: var(--line); stroke-width: 9; }
+.g-fill { fill: none; stroke: var(--accent); stroke-width: 9; stroke-linecap: round; }
+.g-num { font-family: var(--f-display); font-weight: 400; font-size: 28px; fill: var(--ink); text-anchor: middle; dominant-baseline: middle; }
+.g-sub { font-family: var(--f-mono); font-size: 8px; fill: var(--muted); text-anchor: middle; }
+.disclaimer { font-size: .9rem; color: var(--muted); border-left: 3px solid var(--brass); padding: 4px 0 4px 14px; }
+.regions { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+@media (max-width: 400px) { .regions { grid-template-columns: minmax(0, 1fr); } }
+.region { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; border-top: 4px solid var(--line); }
+.region.good { border-top-color: var(--good); } .region.mild { border-top-color: var(--mild); } .region.notable { border-top-color: var(--notable); }
+.region > header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.chip { font-family: var(--f-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+.chip.good { background: var(--good-bg); color: var(--good); } .chip.mild { background: var(--mild-bg); color: var(--mild); } .chip.notable { background: var(--notable-bg); color: var(--notable); } .chip.none { background: var(--paper); color: var(--muted); }
+.r-score { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; }
+.r-score .num { font-family: var(--f-display); font-weight: 400; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.r-score .bar { height: 8px; border-radius: 99px; background: var(--paper); overflow: hidden; }
+.r-score .bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.delta { grid-column: 1 / -1; font-family: var(--f-mono); font-size: .75rem; color: var(--muted); }
+.delta.up { color: var(--good); } .delta.down { color: var(--notable); }
+.metrics { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.metric { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.m-head { display: flex; align-items: baseline; gap: 8px; }
+.m-label { font-weight: 700; }
+.tag { font-family: var(--f-mono); font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); border: 1px solid var(--line); padding: 1px 6px; border-radius: 6px; }
+.m-val { margin-left: auto; font-family: var(--f-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.m-val small { font-size: .75em; margin-left: 1px; }
+.m-val.good { color: var(--good); } .m-val.mild { color: var(--mild); } .m-val.notable { color: var(--notable); }
+.scale { position: relative; display: flex; height: 6px; border-radius: 99px; overflow: visible; }
+.scale span { height: 100%; }
+.scale .z-good { background: var(--good-bg); border-radius: 99px 0 0 99px; } .scale .z-mild { background: var(--mild-bg); } .scale .z-notable { flex: 1; background: var(--notable-bg); border-radius: 0 99px 99px 0; }
+.scale i { position: absolute; top: -4px; width: 4px; height: 14px; margin-left: -2px; border-radius: 2px; background: var(--ink); }
+.m-detail { font-size: .95rem; }
+.m-range { font-size: .78rem; color: var(--muted); font-family: var(--f-mono); }
+.advice { font-size: .88rem; color: var(--muted); background: var(--paper); padding: 10px 12px; border-radius: 10px; }
+.photos, .howto { display: grid; gap: 10px; }
+.photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 480px) { .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.photo-grid figure { margin: 0; display: grid; gap: 4px; }
+.photo-grid img { border-radius: 10px; width: 100%; height: auto; background: var(--stage); }
+.photo-grid figcaption { font-family: var(--f-mono); font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.howto ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+/* History */
+.hist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.hist-item { width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--ink); }
+.h-score { font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; border: 3px solid var(--line); }
+.h-score.good { border-color: var(--good); } .h-score.mild { border-color: var(--mild); } .h-score.notable { border-color: var(--notable); }
+.h-text { display: grid; min-width: 0; } .h-text span { color: var(--muted); font-size: .85rem; }
+.h-bars { display: flex; gap: 3px; } .h-bars i { width: 6px; height: 22px; border-radius: 3px; background: var(--line); }
+
+/* Home modes */
+.modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.mode { border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.mode.deep { border-color: var(--accent); }
+.mode h4 { margin: 0; font-family: var(--f-display); font-size: 1.1rem; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mode .row { align-items: center; }
+.small { font-size: .85rem; }
+
+/* Import 3D */
+.scan-steps { list-style: none; counter-reset: s; padding: 0; margin: 0; display: grid; gap: 10px; }
+.scan-steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 2px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.scan-steps li::before { content: counter(s); grid-row: span 2; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-family: var(--f-mono); }
+.scan-steps b { font-family: var(--f-display); }
+.scan-steps span { color: var(--muted); }
+.drop { position: relative; display: grid; gap: 4px; place-items: center; text-align: center; padding: 32px 16px; border: 2px dashed var(--accent); border-radius: var(--r); background: var(--surface); cursor: pointer; }
+.drop.over { background: var(--good-bg); }
+.drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.p3d { list-style: none; padding: 0; margin: 0 auto; display: grid; gap: 6px; max-width: 320px; }
+.p3d li { color: var(--muted); padding-left: 26px; position: relative; }
+.p3d li::before { content: ""; position: absolute; left: 4px; top: 6px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--line); }
+.p3d li.done { color: var(--ink); } .p3d li.done::before { background: var(--accent); border-color: var(--accent); }
+.p3d li.now { color: var(--ink); font-weight: 700; } .p3d li.now::before { border-color: var(--accent); }
+
+/* 3D report */
+#report3d-body { display: grid; gap: 18px; }
+.v3d, .vsec, .hsec, .meas-sec { display: grid; gap: 10px; }
+.v3d-head { display: grid; gap: 4px; }
+.v3d-stage { border-radius: var(--r); overflow: hidden; background: var(--stage); min-height: 380px; touch-action: none; }
+.v3d-stage canvas { display: block; width: 100% !important; }
+.v3d-shot { width: 100%; border-radius: var(--r); }
+.v3d-tools { justify-content: space-between; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.seg-b { font: inherit; font-size: .88rem; border: 0; background: none; color: var(--ink); padding: 8px 12px; min-height: 40px; }
+.seg-b + .seg-b { border-left: 1px solid var(--line); }
+.seg-b[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.seg-b:focus-visible { outline: 3px solid var(--brass); outline-offset: -3px; }
+.vsec-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.vsec-grid figure { margin: 0; display: grid; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px; }
+.vsec-grid figcaption { font-size: .82rem; color: var(--muted); }
+@media (max-width: 520px) { .vsec-grid { grid-template-columns: minmax(0, 1fr); } }
+.vs-svg, .sec-svg { width: 100%; height: auto; display: block; }
+.gmin { stroke: var(--line); stroke-width: .15; }
+.gmaj { stroke: var(--muted); stroke-opacity: .35; stroke-width: .25; }
+.floor { stroke: var(--ink); stroke-width: .6; }
+.plumb { stroke: var(--brass); stroke-width: .5; stroke-dasharray: 2 1.2; }
+.vs-line { fill: none; stroke: var(--ink); stroke-width: .55; stroke-linecap: round; }
+.vs-ghost { fill: none; stroke: var(--accent); stroke-width: .45; stroke-dasharray: 1.2 1; opacity: .8; }
+.vs-prev { fill: none; stroke: var(--notable); stroke-width: .45; stroke-dasharray: .4 .9; stroke-linecap: round; opacity: .8; }
+.vs-chain { fill: none; stroke: var(--accent); stroke-width: .6; }
+.vs-joint { fill: var(--accent); stroke: var(--surface); stroke-width: .4; }
+.vs-curve { fill: var(--brass); }
+.vs-ref { fill: none; stroke: var(--brass); stroke-width: .35; stroke-dasharray: 1 .8; }
+.vs-level { stroke: var(--mild); stroke-width: .5; }
+.vs-lbl { font-family: var(--f-mono); font-size: 3px; fill: var(--muted); }
+.com circle { fill: var(--brass); } .com line { stroke: var(--brass); stroke-width: .35; stroke-dasharray: 1 1; }
+.sec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.sec-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; display: grid; gap: 8px; align-content: start; min-width: 0; cursor: pointer; }
+.sec-card:hover { border-color: var(--accent); }
+.sec-card header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sec-card h4 { margin: 0; font-family: var(--f-display); font-size: 1.05rem; }
+.sec-svg { max-height: 220px; }
+.sec-line { fill: color-mix(in srgb, var(--accent) 14%, transparent); stroke: var(--ink); stroke-width: .35; stroke-linejoin: round; }
+.sec-ghost { fill: none; stroke: var(--accent); stroke-width: .3; stroke-dasharray: .9 .7; }
+.sec-prev { fill: none; stroke: var(--notable); stroke-width: .3; stroke-dasharray: .3 .6; stroke-linecap: round; }
+.sec-axis { stroke: var(--muted); stroke-width: .15; stroke-dasharray: .6 .6; }
+.sec-rot { stroke: var(--brass); stroke-width: .35; }
+.sec-c { fill: var(--brass); }
+.sec-lbl { font-family: var(--f-mono); fill: var(--muted); }
+.plumb-mark line { stroke: var(--brass); stroke-width: .3; }
+.sec-tab, .meas { width: 100%; border-collapse: collapse; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.sec-tab th { text-align: left; font-weight: 400; color: var(--muted); padding: 3px 8px 3px 0; white-space: nowrap; }
+.sec-tab td { padding: 3px 0; font-family: var(--f-mono); font-size: .8rem; }
+.lr-h { color: var(--muted); font-family: var(--f-body) !important; }
+.dl { font-size: .72rem; color: var(--muted); } .dl.up { color: var(--mild); } .dl.down { color: var(--accent); }
+.tab-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.meas th, .meas td { padding: 8px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.meas th:first-child { text-align: left; }
+.meas thead th { font-family: var(--f-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 500; }
+.meas td { font-family: var(--f-mono); font-size: .85rem; }
+.meas tbody tr:last-child th, .meas tbody tr:last-child td { border-bottom: 0; }
+
+.report-export { padding-block: 24px; }
+#report-body { display: grid; gap: 18px; }
+
+/* Sections: a pill row on wide screens; on phones a bar at the bottom, icon above label, as in Sama */
+.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow); padding: 4px; justify-self: start; max-width: 100%; }
+.tab { display: inline-flex; align-items: center; gap: 7px; border: 0; background: none; font: inherit; font-weight: 600; font-size: 14px; color: var(--muted); padding: 8px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.tab .ti { width: 18px; height: 18px; flex: none; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+.tab:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+body.focus .tabs { display: none; }
+@media (max-width: 860px) {
+  .tabs { position: fixed; left: 0; right: 0; bottom: 0; width: auto; justify-self: stretch; z-index: 30; border-radius: 0; border: 0; border-top: 1px solid var(--line); box-shadow: 0 -6px 24px -12px rgba(0,0,0,.25);
+    background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: 6px max(6px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); gap: 0; justify-content: space-around; }
+  .tab { flex: 1 1 0; min-width: 0; flex-direction: column; gap: 2px; justify-content: center; padding: 4px 2px; border-radius: 14px; font-size: 11.5px; }
+  .tab .ti { width: 24px; height: 24px; padding: 5px 16px; border-radius: 999px; box-sizing: content-box; }
+  .tab[aria-selected="true"] { background: none; color: var(--brand); }
+  .tab[aria-selected="true"] .ti { background: color-mix(in srgb, var(--brand) 15%, transparent); }
+  body:not(.focus) { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  body:not(.focus) #toast { bottom: calc(90px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Get the app: a pill in the top bar and a sheet with the steps, as in Sama */
+.topr { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.theme { display: flex; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; box-shadow: var(--shadow); }
+.theme button { border: 0; background: none; color: var(--muted); font: inherit; font-size: 12.5px; font-weight: 600; height: 28px; min-width: 28px; padding: 0 9px; border-radius: 999px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.theme button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.theme button[aria-checked="true"] { background: var(--accent-soft); color: var(--accent); }
+.theme button:focus-visible { outline: 3px solid var(--brass); outline-offset: 1px; }
+.dlbtn { height: 34px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 0 13px 0 10px; box-shadow: var(--shadow); }
+.dlbtn:hover { border-color: var(--brand); color: var(--brand); }
+@media (max-width: 480px) { .dlbtn { width: 34px; padding: 0; justify-content: center; } .dlbtn span { display: none; } }
+.isheet { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 140%); width: min(calc(100vw - 24px), 440px); background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 24px 60px -18px rgba(0,0,0,.45); padding: 18px 18px 16px; z-index: 60; transition: transform .45s cubic-bezier(.2,.9,.25,1); }
+.isheet.on { transform: translate(-50%, 0); }
+.isheet .ihead { display: flex; gap: 14px; align-items: center; padding-right: 18px; }
+.isheet .ihead img { width: 56px; height: 56px; border-radius: 14px; flex: none; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+.isheet h3 { font-size: 20px; line-height: 1.2; }
+.isheet .isub { margin: 3px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.4; }
+.isheet ol { margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; counter-reset: st; }
+.isheet ol li { counter-increment: st; display: flex; align-items: center; gap: 10px; font-size: 14.5px; line-height: 1.35; }
+.isheet ol li::before { content: counter(st); flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 13px; display: grid; place-items: center; }
+.isheet ol svg { vertical-align: -4px; color: var(--brand); }
+.isheet .ibtns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.isheet .x { position: absolute; top: 8px; right: 10px; border: 0; background: none; color: var(--muted); font-size: 22px; line-height: 1; padding: 6px; cursor: pointer; }
+@media (max-width: 860px) { body:not(.focus) .isheet { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
+@media (prefers-reduced-motion: reduce) { .isheet { transition: none; } }
+
+/* Account */
+.acctbtn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--accent-soft); color: var(--accent); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; display: grid; place-items: center; box-shadow: var(--shadow); padding: 0; }
+.acctbtn.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.acctbtn:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+.acct { display: grid; gap: 16px; max-width: 520px; }
+.acct h2 + p { margin-top: 6px; }
+.seg-mode { display: flex; gap: 4px; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 4px; justify-self: start; }
+.seg-mode button { border: 0; background: none; font: inherit; font-weight: 600; font-size: 14px; color: var(--muted); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.seg-mode button[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); }
+.acct-form { display: grid; gap: 14px; }
+.acct-form .field { font-weight: 700; }
+.acct-form .field input { max-width: 100%; font-weight: 400; }
+.acct-msg { min-height: 1.2em; font-size: .92rem; color: var(--muted); margin: 0; }
+.acct-msg.err { color: var(--notable); }
+.link.danger { color: var(--notable); }
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <a href="#" id="brand"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true"><defs><clipPath id="brand-clip"><circle cx="100" cy="100" r="96"/></clipPath></defs><g clip-path="url(#brand-clip)"><rect width="200" height="47" fill="var(--sand)"/><rect y="57" width="200" height="44" fill="var(--accent)"/><rect y="111" width="200" height="44" fill="var(--sand)"/><rect y="165" width="200" height="35" fill="var(--sand)"/></g></svg>Postura</a>
+    <div class="topr">
+      <div class="theme" id="theme" role="radiogroup" aria-label="Theme">
+        <button type="button" role="radio" data-t="auto" aria-checked="true" aria-label="Follow system theme" title="Follow system">Auto</button>
+        <button type="button" role="radio" data-t="light" aria-checked="false" aria-label="Light theme" title="Light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
+        <button type="button" role="radio" data-t="dark" aria-checked="false" aria-label="Dark theme" title="Dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg></button>
+      </div>
+      <button class="acctbtn" type="button" id="acct-btn" hidden title="Your account" aria-label="Your account"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg><span class="ini" hidden></span></button>
+      <button class="dlbtn" type="button" id="dl-btn" hidden title="Get the app" aria-label="Get the app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4.5 16.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2"/></svg><span>Get the app</span></button>
+    </div>
+    <ol id="steps" hidden aria-label="Scan progress">
+      <li>Setup</li><li>Front</li><li>Side</li><li>Back</li><li>Report</li>
+    </ol>
+  </div>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" type="button" role="tab" data-go="scan" aria-selected="true"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="8.5" r="1.8"/><path d="M12 10.5v5M9 12.5h6M10.5 19l1.5-3.5 1.5 3.5"/></svg><span class="tl">Scan</span></button>
+    <button class="tab" type="button" role="tab" data-go="scans" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 12.5h8M8 16h5"/></svg><span class="tl">My scans</span></button>
+    <button class="tab" type="button" role="tab" data-go="report" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M6 7h12M8 12h8M7 17h10"/></svg><span class="tl">Latest report</span></button>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home" class="screen">
+    <div class="wrap" style="padding:0">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Guided posture scan</p>
+          <h1>See how your body stacks up.</h1>
+          <p class="lede">Three guided photos, or a full 3D scan of your body. Postura finds your joints and checks how each region lines up against level and plumb.</p>
+        </div>
+        <svg class="hero-fig" viewBox="0 0 120 240" aria-hidden="true">
+          <rect x="4" y="8" width="112" height="226" rx="56" fill="var(--sand)" fill-opacity=".45"/>
+          <line x1="60" y1="0" x2="60" y2="240" stroke="var(--brass)" stroke-width="2" stroke-dasharray="6 4"/>
+          <circle cx="62" cy="30" r="14" fill="none" stroke="var(--ink)" stroke-width="3"/>
+          <path d="M34 62 L88 60 M61 46 L61 120 M40 120 L82 118 M46 120 L44 176 L46 228 M76 119 L78 176 L76 228 M34 62 L28 118 M88 60 L94 118" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+          <line x1="22" y1="62" x2="100" y2="58" stroke="var(--mild)" stroke-width="3"/>
+          <line x1="30" y1="120" x2="92" y2="118" stroke="var(--good)" stroke-width="3"/>
+          <circle cx="45" cy="176" r="4" fill="var(--good)"/><circle cx="78" cy="176" r="4" fill="var(--good)"/>
+        </svg>
+      </div>
+      <div class="panel">
+        <h3>What you get</h3>
+        <ul class="regions-list">
+          <li>Head and neck</li><li>Shoulders</li><li>Torso and spine</li><li>Hips and pelvis</li><li>Knees</li><li>Feet and balance</li>
+        </ul>
+        <p class="muted">Each region gets a score, the angles behind it, and a picture showing what was measured. Photos are analysed on your device and never uploaded.</p>
+        <div class="field">
+          <label for="height">Your height in cm (optional)</label>
+          <input id="height" type="number" inputmode="decimal" min="100" max="230" placeholder="e.g. 175">
+          <small>Lets the report show differences in centimetres instead of % of height.</small>
+        </div>
+        <label class="agree" for="agree">
+          <input type="checkbox" id="agree">
+          <span><strong>This is not a medical assessment.</strong> Postura is a wellness and education tool. It does not diagnose or treat any condition, and photo measurements are approximate. For pain or health concerns, see a qualified clinician.</span>
+        </label>
+        <div class="modes">
+          <div class="mode">
+            <h4>Photo scan</h4>
+            <p class="muted">Three guided photos with your phone. Quick, works anywhere.</p>
+            <div class="row"><button class="btn primary" id="start" disabled>Start photo scan</button><button class="link" id="example">Example report</button></div>
+          </div>
+          <div class="mode deep">
+            <h4>3D body scan <span class="chip good">Most detailed</span></h4>
+            <p class="muted">Prop your phone up and turn slowly on the spot. Postura builds your body in 3D, stands it on a posture grid, cuts it into sections and compares left with right and with earlier scans.</p>
+            <div class="row"><button class="btn primary" id="start3d" disabled>Scan in Postura</button><button class="link" id="import3d-open" disabled>Import a scan file</button><button class="link" id="example3d">Example 3D report</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MY SCANS -->
+  <section id="scans" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div>
+        <p class="eyebrow">Kept on this device</p>
+        <h2>My scans</h2>
+      </div>
+      <div class="panel">
+        <div id="history"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREP -->
+  <section id="prep" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div>
+        <p class="eyebrow">Before you start</p>
+        <h2>Set up in about a minute</h2>
+      </div>
+      <ul class="tips">
+        <li><b>Prop the phone upright</b><span>At about hip height, on a shelf or chair, screen facing you. Keep it vertical, not tilted.</span></li>
+        <li><b>Stand 2.5 to 3 m away</b><span>Your whole body, head to feet, must fit in the frame with a little space around it.</span></li>
+        <li><b>Wear fitted clothes</b><span>Shorts and a fitted top, barefoot. Baggy clothes hide your hips and knees.</span></li>
+        <li><b>Plain background, good light</b><span>Light in front of you, not behind. A plain wall works best.</span></li>
+        <li><b>Stand as you normally do</b><span>Relaxed, weight on both feet. The goal is to measure your usual posture.</span></li>
+        <li><b>Ask a helper, or use the timer</b><span>With live camera, Postura waits until you hold still, then counts down and takes the photo.</span></li>
+      </ul>
+      <div class="row">
+        <button class="btn primary" id="prep-go">I'm ready</button>
+        <button class="btn" id="prep-back">Back</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPTURE -->
+  <section id="capture" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div>
+        <p class="eyebrow" id="cap-count">Photo 1 of 3</p>
+        <h2 id="cap-title">Front photo</h2>
+      </div>
+
+      <div id="cap-choose" class="choose">
+        <div class="cap-grid">
+          <ol id="cap-lines"></ol>
+          <div>
+            <div class="guide-fig" data-view="front">
+              <svg viewBox="0 0 80 160" aria-label="Stand facing the camera"><g fill="none" stroke="#F3F1EA" stroke-width="3" stroke-linecap="round"><circle cx="40" cy="18" r="10"/><path d="M22 40 L58 40 M40 28 L40 82 M28 82 L52 82 M30 82 L29 152 M50 82 L51 152 M22 40 L18 84 M58 40 L62 84"/></g><line x1="40" y1="2" x2="40" y2="158" stroke="#E0A64B" stroke-dasharray="4 3"/></svg>
+            </div>
+            <div class="guide-fig" data-view="side" hidden>
+              <svg viewBox="0 0 80 160" aria-label="Stand side-on to the camera"><g fill="none" stroke="#F3F1EA" stroke-width="3" stroke-linecap="round"><circle cx="42" cy="18" r="10"/><path d="M40 28 L40 82 M40 40 L40 84 M40 82 L40 152 M40 152 L52 152"/><path d="M50 16 L54 19"/></g><line x1="42" y1="2" x2="42" y2="158" stroke="#E0A64B" stroke-dasharray="4 3"/></svg>
+            </div>
+            <div class="guide-fig" data-view="back" hidden>
+              <svg viewBox="0 0 80 160" aria-label="Stand with your back to the camera"><g fill="none" stroke="#F3F1EA" stroke-width="3" stroke-linecap="round"><circle cx="40" cy="18" r="10" fill="#F3F1EA" fill-opacity=".25"/><path d="M22 40 L58 40 M40 28 L40 82 M28 82 L52 82 M30 82 L29 152 M50 82 L51 152 M22 40 L18 84 M58 40 L62 84"/></g><line x1="40" y1="2" x2="40" y2="158" stroke="#E0A64B" stroke-dasharray="4 3"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="live-btn" hidden>Use live camera with guidance</button>
+          <label class="btn primary file-btn" for="file-camera">Take photo<input id="file-camera" type="file" accept="image/*" capture="environment"></label>
+          <label class="btn file-btn" for="file-pick">Choose a photo<input id="file-pick" type="file" accept="image/*"></label>
+        </div>
+        <button class="link" id="cap-back">Back</button>
+      </div>
+
+      <div id="cap-live" hidden class="choose">
+        <div class="stage" id="live-stage">
+          <video id="live-video" playsinline muted></video>
+          <canvas id="live-overlay"></canvas>
+          <div class="frame" aria-hidden="true"></div>
+          <div id="live-status" role="status" aria-live="polite">Step into the frame</div>
+        </div>
+        <div class="row">
+          <button class="btn" id="live-cancel">Cancel</button>
+          <button class="btn" id="live-flip">Switch camera</button>
+          <button class="btn" id="voice" aria-pressed="false">Voice cues off</button>
+        </div>
+      </div>
+
+      <div id="cap-review" hidden class="choose review-wrap">
+        <canvas id="review-canvas"></canvas>
+        <div id="review-issues" class="issues"></div>
+        <div class="row">
+          <button class="btn primary" id="review-use">Use this photo</button>
+          <button class="btn" id="review-retake">Retake</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO SCAN -->
+  <section id="videoscan" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div>
+        <p class="eyebrow">3D body scan</p>
+        <h2>Turn once in front of your phone</h2>
+      </div>
+      <ol class="scan-steps">
+        <li><b>Prop the phone up</b><span>Upright, at about waist height, 2.5 to 3 m away, so your whole body fits with space above your head and below your feet. A plain wall behind you helps.</span></li>
+        <li><b>Get ready</b><span>Fitted clothes, hair tied up, shoes off. Stand in a relaxed A-pose: arms 20 to 30° away from your sides, feet hip-width apart.</span></li>
+        <li><b>Record and turn</b><span>Start facing the camera. Turn slowly on the spot, all the way round once, in 20 to 30 seconds, keeping the A-pose. Stop when you face the camera again.</span></li>
+      </ol>
+      <label class="field">Your height (cm), needed for real measurements
+        <input id="vs-height" type="number" inputmode="decimal" min="100" max="230" placeholder="e.g. 175">
+      </label>
+      <div class="row">
+        <label class="btn primary" for="vs-record" id="vs-record-label">Record video<input id="vs-record" type="file" accept="video/*" capture="user" hidden></label>
+        <label class="btn" for="vs-pick">Choose a video<input id="vs-pick" type="file" accept="video/*" hidden></label>
+      </div>
+      <p class="muted small">The video is processed in your browser and never uploaded. Building the body takes about 20 to 60 seconds on a phone.</p>
+      <div class="row"><button class="link" id="vs-import">I already have a 3D scan file</button><button class="link" id="videoscan-back">Back</button></div>
+    </div>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section id="account" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div id="acct-out" class="acct">
+        <div>
+          <p class="eyebrow">Your account</p>
+          <h2 id="acct-title">Sign in to Postura</h2>
+          <p class="muted">Keep your scan results safe and see them on any device. Photos stay on the phone you took them with.</p>
+        </div>
+        <div class="panel">
+          <div class="seg-mode" role="radiogroup" aria-label="Sign in or create an account">
+            <button type="button" role="radio" data-mode="in" aria-checked="true">Sign in</button>
+            <button type="button" role="radio" data-mode="up" aria-checked="false">Create account</button>
+          </div>
+          <form id="acct-form" class="acct-form" novalidate>
+            <label class="field" for="acct-email">Email
+              <input id="acct-email" type="email" autocomplete="email" inputmode="email" required>
+            </label>
+            <label class="field" for="acct-pass">Password
+              <input id="acct-pass" type="password" autocomplete="current-password" minlength="8" required>
+            </label>
+            <small class="muted" id="acct-hint" hidden>At least 8 characters.</small>
+            <p class="acct-msg" id="acct-msg" role="status" aria-live="polite"></p>
+            <div class="row">
+              <button class="btn primary" type="submit" id="acct-submit">Sign in</button>
+              <button class="link" type="button" id="acct-forgot">Forgot your password?</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="acct-in" class="acct" hidden>
+        <div>
+          <p class="eyebrow">Your account</p>
+          <h2>Signed in</h2>
+          <p class="muted"><strong id="acct-who"></strong></p>
+        </div>
+        <div class="panel">
+          <p id="acct-verify" class="muted" hidden>Check your inbox for a link to confirm this email address.</p>
+          <p>Your scan results sync to this account, so they are safe if you lose this phone and you can open them on any device. Photos stay on the phone you took them with.</p>
+          <p class="acct-msg" id="acct-sync" role="status" aria-live="polite"></p>
+          <div class="row">
+            <button class="btn" type="button" id="acct-signout">Sign out</button>
+            <button class="link danger" type="button" id="acct-delete">Delete account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPORT 3D -->
+  <section id="import3d" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div>
+        <p class="eyebrow">3D body scan</p>
+        <h2>Bring in your 3D scan</h2>
+      </div>
+      <ol class="scan-steps">
+        <li><b>Scan with a free phone app</b><span>Scaniverse, Polycam or KIRI Engine all work. Use the photo or LiDAR mode for objects or people.</span></li>
+        <li><b>Stand in a relaxed A-pose</b><span>Arms 20 to 30° away from your sides, feet hip-width apart and parallel, looking straight ahead. Fitted clothes, hair tied up.</span></li>
+        <li><b>A helper walks around you</b><span>Two slow loops, one at chest height and one at knee height, about 1 m away. Hold still the whole time, usually 1 to 2 minutes.</span></li>
+        <li><b>Export the mesh</b><span>Choose OBJ, GLB, PLY or STL. Postura finds the floor, the up direction and the units by itself.</span></li>
+      </ol>
+      <label class="drop" id="drop3d" for="mesh-file">
+        <input id="mesh-file" type="file" accept=".obj,.glb,.gltf,.ply,.stl">
+        <strong>Choose a scan file</strong>
+        <span class="muted">or drop it here · OBJ, GLB, PLY, STL</span>
+      </label>
+      <p class="muted small">The scan is processed in your browser and never uploaded. A 1 million triangle scan takes about 10 to 20 seconds on a phone.</p>
+      <button class="link" id="import3d-back">Back</button>
+    </div>
+  </section>
+
+  <!-- PROCESSING 3D -->
+  <section id="processing3d" class="screen" hidden>
+    <div class="panel">
+      <div class="spin"></div>
+      <p style="text-align:center"><strong id="p3d-file"></strong></p>
+      <ol id="p3d" class="p3d"></ol>
+    </div>
+  </section>
+
+  <!-- REPORT 3D -->
+  <section id="report3d" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div id="report3d-body"></div>
+      <div class="row">
+        <button class="btn primary" id="r3d-again">New 3D scan</button>
+        <button class="btn" id="r3d-save">Save report</button>
+        <button class="btn" id="r3d-home">Home</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANALYZING -->
+  <section id="analyzing" class="screen" hidden>
+    <div class="panel" style="text-align:center"><div class="spin"></div><p>Measuring your alignment…</p></div>
+  </section>
+
+  <!-- REPORT -->
+  <section id="report" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div id="report-body"></div>
+      <div class="row">
+        <button class="btn primary" id="report-again">New scan</button>
+        <button class="btn" id="save-report">Save report</button>
+        <button class="btn" id="report-home">Home</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="busy" hidden><div style="text-align:center"><div class="spin"></div><p id="busy-msg">Working…</p></div></div>
+<div class="isheet" id="isheet" role="dialog" aria-labelledby="i-title" hidden>
+  <button class="x" type="button" id="i-close" aria-label="Close">×</button>
+  <div class="ihead"><img src="icons/icon-192.png" alt=""><div><h3 id="i-title">Put Postura on your home screen</h3><p class="isub">It opens full-screen like an app and works offline once loaded. Nothing to download from a store: it is this website, always up to date.</p></div></div>
+  <ol id="i-steps" hidden></ol>
+  <div class="ibtns"><button class="btn" type="button" id="i-later">Not now</button><button class="btn primary" type="button" id="i-go" hidden>Add to home screen</button></div>
+</div>
+<div id="toast" hidden role="status"></div>
+<div id="flash" hidden></div>
+<script type="module" src="app.js"></script>
