@@ -24,6 +24,15 @@ twist, tilt, back curve depths, girths and left/right differences, centre of mas
 report3d.js draws the 3D viewer, posture grid sections and measurements, and compares with the
 previous 3D scan. mannequin.js builds the procedural sample body used by the example report.
 
+## Accounts (email and password)
+The person icon in the header opens sign-in. Accounts use Postura's own Firebase project
+(postura-1c2aa): Firebase Authentication with email and password, and Cloud Firestore in eur3
+(Europe). Scan results sync to users/{uid}/scans/{id}, one JSON string per scan. Photos never
+leave the phone: account.js removes the images before syncing. firestore.rules lets each person
+read, write and delete only their own scans. Accounts switch off inside an iframe, on plain http
+(other than localhost), or when firebase-config.js is null. To allow a new web address, add it in
+Firebase > Authentication > Settings > Authorized domains.
+
 ## Run locally
     sh build.sh                    # writes index.html from app.html
     python3 -m http.server 8000   # then open http://localhost:8000
@@ -38,9 +47,12 @@ Live camera guidance needs https or localhost. On a phone, host it over https
 - example.js: synthetic landmarks for the example report
 - scanvideo.js: turn-around video to 3D body (visual hull)
 - scan3d.js, metrics3d.js, report3d.js, mannequin.js: 3D scan pipeline, metrics, report, sample body
+- account.js, firebase-config.js, firestore.rules: accounts, scan sync and database rules
+- vendor/firebase: Firebase JS SDK compat builds (app, auth, firestore)
 - vendor/three: three.js r160 (module build and the loaders/controls used)
 - vendor/, wasm/, models/: MediaPipe Tasks Vision 0.10.14 and pose_landmarker_full (models/*.task.wasm is the .task file, renamed so static hosts serve it)
 
 ## Third-party code
 - three.js r160, MIT licence, (c) three.js authors: https://github.com/mrdoob/three.js
 - MediaPipe Tasks Vision 0.10.14 and the Pose Landmarker model, Apache 2.0, (c) Google: https://github.com/google-ai-edge/mediapipe
+- Firebase JS SDK, Apache 2.0, (c) Google: https://github.com/firebase/firebase-js-sdk

@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Each signed-in person reads and writes only their own scans. Nothing else is readable.
+    match /users/{uid}/scans/{scanId} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['json', 'date', 'type', 'v'])
+        && request.resource.data.json is string
+        && request.resource.data.json.size() < 950000
+        && scanId.size() <= 20;
+    }
+  }
+}

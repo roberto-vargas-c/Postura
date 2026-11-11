@@ -302,6 +302,22 @@ body.focus .tabs { display: none; }
 .isheet .x { position: absolute; top: 8px; right: 10px; border: 0; background: none; color: var(--muted); font-size: 22px; line-height: 1; padding: 6px; cursor: pointer; }
 @media (max-width: 860px) { body:not(.focus) .isheet { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
 @media (prefers-reduced-motion: reduce) { .isheet { transition: none; } }
+
+/* Account */
+.acctbtn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--accent-soft); color: var(--accent); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; display: grid; place-items: center; box-shadow: var(--shadow); padding: 0; }
+.acctbtn.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.acctbtn:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+.acct { display: grid; gap: 16px; max-width: 520px; }
+.acct h2 + p { margin-top: 6px; }
+.seg-mode { display: flex; gap: 4px; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 4px; justify-self: start; }
+.seg-mode button { border: 0; background: none; font: inherit; font-weight: 600; font-size: 14px; color: var(--muted); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.seg-mode button[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); }
+.acct-form { display: grid; gap: 14px; }
+.acct-form .field { font-weight: 700; }
+.acct-form .field input { max-width: 100%; font-weight: 400; }
+.acct-msg { min-height: 1.2em; font-size: .92rem; color: var(--muted); margin: 0; }
+.acct-msg.err { color: var(--notable); }
+.link.danger { color: var(--notable); }
 </style>
 
 <div class="wrap">
@@ -313,6 +329,7 @@ body.focus .tabs { display: none; }
         <button type="button" role="radio" data-t="light" aria-checked="false" aria-label="Light theme" title="Light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
         <button type="button" role="radio" data-t="dark" aria-checked="false" aria-label="Dark theme" title="Dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg></button>
       </div>
+      <button class="acctbtn" type="button" id="acct-btn" hidden title="Your account" aria-label="Your account"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg><span class="ini" hidden></span></button>
       <button class="dlbtn" type="button" id="dl-btn" hidden title="Get the app" aria-label="Get the app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4.5 16.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2"/></svg><span>Get the app</span></button>
     </div>
     <ol id="steps" hidden aria-label="Scan progress">
@@ -488,6 +505,55 @@ body.focus .tabs { display: none; }
       </div>
       <p class="muted small">The video is processed in your browser and never uploaded. Building the body takes about 20 to 60 seconds on a phone.</p>
       <div class="row"><button class="link" id="vs-import">I already have a 3D scan file</button><button class="link" id="videoscan-back">Back</button></div>
+    </div>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section id="account" class="screen" hidden>
+    <div class="wrap" style="padding:0">
+      <div id="acct-out" class="acct">
+        <div>
+          <p class="eyebrow">Your account</p>
+          <h2 id="acct-title">Sign in to Postura</h2>
+          <p class="muted">Keep your scan results safe and see them on any device. Photos stay on the phone you took them with.</p>
+        </div>
+        <div class="panel">
+          <div class="seg-mode" role="radiogroup" aria-label="Sign in or create an account">
+            <button type="button" role="radio" data-mode="in" aria-checked="true">Sign in</button>
+            <button type="button" role="radio" data-mode="up" aria-checked="false">Create account</button>
+          </div>
+          <form id="acct-form" class="acct-form" novalidate>
+            <label class="field" for="acct-email">Email
+              <input id="acct-email" type="email" autocomplete="email" inputmode="email" required>
+            </label>
+            <label class="field" for="acct-pass">Password
+              <input id="acct-pass" type="password" autocomplete="current-password" minlength="8" required>
+            </label>
+            <small class="muted" id="acct-hint" hidden>At least 8 characters.</small>
+            <p class="acct-msg" id="acct-msg" role="status" aria-live="polite"></p>
+            <div class="row">
+              <button class="btn primary" type="submit" id="acct-submit">Sign in</button>
+              <button class="link" type="button" id="acct-forgot">Forgot your password?</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="acct-in" class="acct" hidden>
+        <div>
+          <p class="eyebrow">Your account</p>
+          <h2>Signed in</h2>
+          <p class="muted"><strong id="acct-who"></strong></p>
+        </div>
+        <div class="panel">
+          <p id="acct-verify" class="muted" hidden>Check your inbox for a link to confirm this email address.</p>
+          <p>Your scan results sync to this account, so they are safe if you lose this phone and you can open them on any device. Photos stay on the phone you took them with.</p>
+          <p class="acct-msg" id="acct-sync" role="status" aria-live="polite"></p>
+          <div class="row">
+            <button class="btn" type="button" id="acct-signout">Sign out</button>
+            <button class="link danger" type="button" id="acct-delete">Delete account</button>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

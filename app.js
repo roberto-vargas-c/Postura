@@ -92,7 +92,7 @@ function show(id) {
     li.classList.toggle('current', i === stepIdx);
   });
   $('#steps').hidden = !['prep', 'capture', 'analyzing', 'report'].includes(id);
-  const section = id === 'scans' ? 'scans' : (id === 'report' || id === 'report3d') ? 'report' : 'scan';
+  const section = id === 'account' ? 'none' : id === 'scans' ? 'scans' : (id === 'report' || id === 'report3d') ? 'report' : 'scan';
   $$('#tabs .tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.go === section)));
   document.body.classList.toggle('focus', ['capture', 'analyzing', 'processing3d'].includes(id));
   window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
@@ -683,13 +683,13 @@ async function saveScan(scan) {
   for (let n = list.length; n > 0; n--) {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, n))); break; } catch { /* storage full or blocked */ }
   }
-  renderHistory();
+  renderHistory();  syncUp(copy);
 }
 
 function renderHistory() {
   const list = loadHistory();
   const box = $('#history');
-  if (!list.length) { box.innerHTML = '<p class="muted">Your scans are kept on this device only. After your first scan you will see them here and can compare them over time.</p>'; return; }
+  if (!list.length) { box.innerHTML = `<p class="muted">${acctUser() ? 'Your scan results sync to your account.' : 'Your scans are kept on this device only.'} After your first scan you will see them here and can compare them over time.</p>`; return; }
   box.innerHTML = `<ul class="hist">${list.map((s) => `
     <li><button class="hist-item" data-id="${s.id}">
       <span class="h-score ${worst(s.regions)}">${s.overall ?? '–'}</span>
@@ -700,8 +700,8 @@ function renderHistory() {
   $$('.hist-item', box).forEach((b) => b.addEventListener('click', () => openSaved(Number(b.dataset.id))));
   $('#clear-history').addEventListener('click', () => {
     const b = $('#clear-history');
-    if (b.dataset.armed) { try { localStorage.removeItem(STORE_KEY); } catch {} renderHistory(); toast('Saved scans deleted'); }
-    else { b.dataset.armed = '1'; b.textContent = 'Tap again to delete all saved scans'; setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = 'Delete saved scans'; } }, 4000); }
+    if (b.dataset.armed) { try { localStorage.removeItem(STORE_KEY); } catch {} if (acctUser()) acct.deleteScans().catch(() => toast('Could not delete the scans in your account. Try again when online.')); renderHistory(); toast(acctUser() ? 'Saved scans deleted here and from your account' : 'Saved scans deleted'); }
+    else { b.dataset.armed = '1'; b.textContent = acctUser() ? 'Tap again to delete all scans, also from your account' : 'Tap again to delete all saved scans'; setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = 'Delete saved scans'; } }, 4000); }
   });
 }
 
@@ -798,7 +798,7 @@ function save3d(rec) {
   for (let n = list.length; n > 0; n--) {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, n))); break; } catch { /* storage full or blocked */ }
   }
-  renderHistory();
+  renderHistory();  syncUp(rec);
 }
 
 async function show3dExample() {
@@ -938,11 +938,116 @@ function initTheme() {
   }));
 }
 
+// ---------- Account (email and password) ----------
+let acct = null;
+const acctUser = () => (acct ? acct.user() : null);
+
+function syncUp(rec) {
+  if (!acctUser()) return;
+  acct.pushScan(rec).catch(() => toast('Saved on this phone. It will sync to your account next time you sign in.'));
+}
+
+function storeList(list) {
+  list.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  list = list.slice(0, 24);
+  for (let n = list.length; n > 0; n--) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, n))); break; } catch { /* storage full or blocked */ }
+  }
+}
+
+// Brings this device and the account together: scans only in the account come down, scans only here go up.
+async function syncAll() {
+  const msg = $('#acct-sync');
+  if (msg) { msg.classList.remove('err'); msg.textContent = 'Syncing your scans…'; }
+  try {
+    const cloud = await acct.pullScans();
+    const local = loadHistory();
+    const ids = new Set(local.map((s) => String(s.id)));
+    const cloudIds = new Set(cloud.map((s) => String(s.id)));
+    const merged = local.concat(cloud.filter((s) => !ids.has(String(s.id))));
+    storeList(merged);
+    const up = local.filter((s) => !cloudIds.has(String(s.id)) && !s.example);
+    for (const s of up) await acct.pushScan(s);
+    renderHistory();
+    if (msg) msg.textContent = `Up to date: ${merged.length} scan${merged.length === 1 ? '' : 's'} in your account.`;
+  } catch (e) {
+    console.error(e);
+    if (msg) { msg.classList.add('err'); msg.textContent = 'Could not sync right now. Your scans are still saved on this phone.'; }
+  }
+}
+
+function showAccountState(u) {
+  const b = $('#acct-btn');
+  b.classList.toggle('on', !!u);
+  const ini = $('.ini', b), ico = $('svg', b);
+  ini.hidden = !u; ico.style.display = u ? 'none' : '';
+  if (u) ini.textContent = (u.email || '?')[0].toUpperCase();
+  b.title = u ? `Signed in as ${u.email}` : 'Sign in';
+  b.setAttribute('aria-label', b.title);
+  $('#acct-out').hidden = !!u; $('#acct-in').hidden = !u;
+  if (u) { $('#acct-who').textContent = u.email; $('#acct-verify').hidden = !!u.emailVerified; }
+}
+
+async function initAccount() {
+  try {
+    acct = await import('./account.js');
+    if (!acct.available()) { acct = null; return; }
+  } catch { acct = null; return; }
+  const b = $('#acct-btn'); b.hidden = false;
+  b.addEventListener('click', () => { stopLive(); show('account'); });
+  let mode = 'in';
+  const setMode = (m) => {
+    mode = m;
+    $$('.seg-mode button').forEach((x) => x.setAttribute('aria-checked', String(x.dataset.mode === m)));
+    $('#acct-submit').textContent = m === 'in' ? 'Sign in' : 'Create account';
+    $('#acct-title').textContent = m === 'in' ? 'Sign in to Postura' : 'Create your Postura account';
+    $('#acct-pass').autocomplete = m === 'in' ? 'current-password' : 'new-password';
+    $('#acct-hint').hidden = m === 'in'; $('#acct-forgot').hidden = m !== 'in';
+    say('');
+  };
+  const say = (t, err) => { const m = $('#acct-msg'); m.textContent = t; m.classList.toggle('err', !!err); };
+  $$('.seg-mode button').forEach((x) => x.addEventListener('click', () => setMode(x.dataset.mode)));
+  try { await acct.init(); } catch (e) { console.error(e); b.hidden = true; acct = null; return; }
+  acct.onChange((u) => { showAccountState(u); if (u) syncAll(); else renderHistory(); });
+  $('#acct-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $('#acct-email').value.trim(), pass = $('#acct-pass').value;
+    if (!email) return say('Enter your email address.', true);
+    const go = $('#acct-submit'); go.disabled = true; say(mode === 'in' ? 'Signing in…' : 'Creating your account…');
+    try {
+      if (mode === 'in') await acct.signIn(email, pass); else await acct.signUp(email, pass);
+      $('#acct-pass').value = ''; say('');
+      toast(mode === 'in' ? 'Signed in' : 'Account created. Check your inbox to confirm your email.');
+    } catch (err) { say(acct.friendlyError(err), true); }
+    go.disabled = false;
+  });
+  $('#acct-forgot').addEventListener('click', async () => {
+    const email = $('#acct-email').value.trim();
+    if (!email) { say('Enter your email address first, then tap this again.', true); $('#acct-email').focus(); return; }
+    try { await acct.resetPassword(email); say(`If there is an account for ${email}, a link to set a new password is on its way.`); }
+    catch (err) { say(acct.friendlyError(err), true); }
+  });
+  $('#acct-signout').addEventListener('click', async () => { await acct.signOut(); toast('Signed out. Your scans stay on this phone.'); });
+  $('#acct-delete').addEventListener('click', async () => {
+    const d = $('#acct-delete');
+    if (!d.dataset.armed) {
+      d.dataset.armed = '1'; d.textContent = 'Tap again to delete your account and the scans in it';
+      setTimeout(() => { if (d.isConnected) { delete d.dataset.armed; d.textContent = 'Delete account'; } }, 5000);
+      return;
+    }
+    const m = $('#acct-sync');
+    try { await acct.deleteAccount(); toast('Account deleted. Scans on this phone were kept.'); }
+    catch (err) { m.classList.add('err'); m.textContent = acct.friendlyError(err); }
+    delete d.dataset.armed; d.textContent = 'Delete account';
+  });
+}
+
 // ---------- Wire up ----------
 function init() {
   initHome();
   initInstall();
   initTheme();
+  initAccount();
   const canLive = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext;
   $('#live-btn').hidden = !canLive;
   $('#live-btn').addEventListener('click', startLive);
