@@ -31,7 +31,8 @@ Live camera guidance needs https or localhost. On a phone, host it over https
 (e.g. GitHub Pages, Netlify) to get the live camera; otherwise "Take photo" works everywhere.
 
 ## Files
-- app.html: page body and styles (build.sh wraps it into index.html)
+- app.html: page body and styles (build.sh wraps it into index.html with the icons and manifest)
+- icons/, manifest.webmanifest: app icon (sliced-disc mark), favicon, home-screen and maskable icons
 - app.js: guided capture flow, live camera cues, report, history (localStorage)
 - metrics.js: all alignment maths and thresholds (pure, runs in Node)
 - example.js: synthetic landmarks for the example report

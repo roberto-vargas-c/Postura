@@ -92,6 +92,9 @@ function show(id) {
     li.classList.toggle('current', i === stepIdx);
   });
   $('#steps').hidden = !['prep', 'capture', 'analyzing', 'report'].includes(id);
+  const section = id === 'scans' ? 'scans' : (id === 'report' || id === 'report3d') ? 'report' : 'scan';
+  $$('#tabs .tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.go === section)));
+  document.body.classList.toggle('focus', ['capture', 'analyzing', 'processing3d'].includes(id));
   window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
 }
 
@@ -871,6 +874,16 @@ async function handleVideo(file, opts = {}) {
 }
 if (typeof window !== 'undefined') window.__posturaVideo = handleVideo;
 
+// ---------- Sections menu ----------
+function goSection(go) {
+  if (go === 'scan') { stopLive(); renderHistory(); show('home'); return; }
+  if (go === 'scans') { stopLive(); renderHistory(); show('scans'); return; }
+  if (state.lastReport && !state.lastReport.scan?.example) { show(state.lastReport.is3d ? 'report3d' : 'report'); return; }
+  const latest = loadHistory()[0];
+  if (latest) { openSaved(latest.id); return; }
+  toast('No reports yet. Your latest report appears here after your first scan.');
+}
+
 // ---------- Wire up ----------
 function init() {
   initHome();
@@ -898,6 +911,7 @@ function init() {
   $('#report-again').addEventListener('click', () => { state.captures = {}; state.step = 0; show('prep'); });
   $('#save-report').addEventListener('click', saveReport);
   $('#brand').addEventListener('click', (e) => { e.preventDefault(); stopLive(); show('home'); });
+  $$('#tabs .tab').forEach((t) => t.addEventListener('click', () => goSection(t.dataset.go)));
   $('#start3d').addEventListener('click', openVideoScan);
   $('#import3d-open').addEventListener('click', open3dImport);
   $('#vs-import').addEventListener('click', open3dImport);
