@@ -921,10 +921,28 @@ function initInstall() {
   const btn = $('#dl-btn'); btn.hidden = false; btn.addEventListener('click', show);
 }
 
+// ---------- Theme: auto (follows the system), light or dark, as in Sama ----------
+function initTheme() {
+  const KEY = 'postura.theme';
+  let cur = 'auto';
+  try { cur = localStorage.getItem(KEY) || 'auto'; } catch {}
+  const apply = (t) => {
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    else delete document.documentElement.dataset.theme;
+    $$('#theme button').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.t === t)));
+  };
+  apply(cur);
+  $$('#theme button').forEach((b) => b.addEventListener('click', () => {
+    apply(b.dataset.t);
+    try { localStorage.setItem(KEY, b.dataset.t); } catch {}
+  }));
+}
+
 // ---------- Wire up ----------
 function init() {
   initHome();
   initInstall();
+  initTheme();
   const canLive = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext;
   $('#live-btn').hidden = !canLive;
   $('#live-btn').addEventListener('click', startLive);
