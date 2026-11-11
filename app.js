@@ -884,9 +884,47 @@ function goSection(go) {
   toast('No reports yet. Your latest report appears here after your first scan.');
 }
 
+// ---------- Get the app (add to home screen) ----------
+function initInstall() {
+  const sheet = $('#isheet'), ua = navigator.userAgent, KEY = 'postura.installAsk';
+  const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  let framed = true; try { framed = window.top !== window.self; } catch { framed = true; }
+  // Inside an embedding page (such as the Claude preview) the browser cannot install the page, so the button stays hidden.
+  if (framed || standalone()) return;
+  const ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1), android = /Android/.test(ua);
+  let deferred = null;
+  if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; if (!sheet.hidden) steps(); });
+  addEventListener('appinstalled', () => { hide(); $('#dl-btn').hidden = true; try { localStorage.setItem(KEY, 'installed'); } catch {} });
+  const svg = (d, label) => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${label ? `aria-label="${label}"` : 'aria-hidden="true"'}>${d}</svg>`;
+  const share = svg('<path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/>', 'Share');
+  const plus = svg('<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/>');
+  const dots = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-label="menu"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>';
+  const inst = svg('<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 8v6M9.5 11.5 12 14l2.5-2.5M8 21h8"/>');
+  function steps() {
+    const ol = $('#i-steps');
+    if (deferred) { ol.hidden = true; $('#i-go').hidden = false; return; }
+    $('#i-go').hidden = true; ol.hidden = false;
+    ol.innerHTML = ios
+      ? `<li><span>Tap ${share} <b>Share</b> in the browser bar</span></li><li><span>Scroll down and tap ${plus} <b>Add to Home Screen</b></span></li><li><span>Tap <b>Add</b>. Postura appears with your apps</span></li>`
+      : android ? `<li><span>Open the browser menu ${dots}</span></li><li><span>Tap <b>Add to Home screen</b> or <b>Install app</b></span></li><li><span>Confirm. Postura appears with your apps</span></li>`
+      : `<li><span>In Chrome or Edge, click ${inst} <b>Install</b> at the right end of the address bar</span></li><li><span>Or open the browser menu and choose <b>Install Postura</b></span></li><li><span>On a Mac with Safari: <b>File → Add to Dock</b></span></li>`;
+  }
+  function show() { steps(); sheet.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('on'))); }
+  function hide() { sheet.classList.remove('on'); setTimeout(() => { sheet.hidden = true; }, 450); }
+  function later() { hide(); try { localStorage.setItem(KEY, String(Date.now())); } catch {} }
+  $('#i-close').addEventListener('click', later); $('#i-later').addEventListener('click', later);
+  $('#i-go').addEventListener('click', async () => {
+    if (!deferred) return; const d = deferred; deferred = null; hide();
+    try { d.prompt(); const r = await d.userChoice; if (r && r.outcome === 'accepted') localStorage.setItem(KEY, 'installed'); } catch {}
+  });
+  const btn = $('#dl-btn'); btn.hidden = false; btn.addEventListener('click', show);
+}
+
 // ---------- Wire up ----------
 function init() {
   initHome();
+  initInstall();
   const canLive = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext;
   $('#live-btn').hidden = !canLive;
   $('#live-btn').addEventListener('click', startLive);
