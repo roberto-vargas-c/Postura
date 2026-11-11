@@ -162,20 +162,20 @@ export class Viewer {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     host.appendChild(this.renderer.domElement);
     const scene = (this.scene = new THREE.Scene());
-    scene.background = new THREE.Color(0x18221f);
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x445550, 1.5));
+    scene.background = new THREE.Color(0x1e2621);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x46523f, 1.5));
     const d = new THREE.DirectionalLight(0xffffff, 1.6); d.position.set(1.5, 3, 2.5); scene.add(d);
-    const d2 = new THREE.DirectionalLight(0xbfe6dc, 0.6); d2.position.set(-2, 1.5, -2); scene.add(d2);
+    const d2 = new THREE.DirectionalLight(0xe7ebe3, 0.6); d2.position.set(-2, 1.5, -2); scene.add(d2);
     const H = rec.height;
 
     // Posture grid: floor plus two backdrops, 5 cm squares with 10 cm emphasis.
     const grid = (this.grid = new THREE.Group());
-    const mk = (size, div) => { const g = new THREE.GridHelper(size, div, 0x4f6a63, 0x2b3a36); g.material.transparent = true; g.material.opacity = 0.9; return g; };
+    const mk = (size, div) => { const g = new THREE.GridHelper(size, div, 0x5e6a5f, 0x313a33); g.material.transparent = true; g.material.opacity = 0.9; return g; };
     const floor = mk(2, 40); grid.add(floor);
     const back = mk(2.4, 48); back.rotation.x = Math.PI / 2; back.position.set(0, 1.2, -0.6); grid.add(back);
     const side = mk(2.4, 48); side.rotation.z = Math.PI / 2; side.position.set(-0.75, 1.2, 0); grid.add(side);
     scene.add(grid);
-    const plumbMat = new THREE.LineBasicMaterial({ color: 0xe2ab4c });
+    const plumbMat = new THREE.LineBasicMaterial({ color: 0xe0a64b });
     const plumb = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, H + 0.12, 0)]), plumbMat);
     grid.add(plumb);
 
@@ -195,14 +195,14 @@ export class Viewer {
     const sk = (this.skeleton = new THREE.Group());
     const pos = [];
     for (const [a, b] of bones) pos.push(L[a], L[b]);
-    sk.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pos), new THREE.LineBasicMaterial({ color: 0x7af0cc, depthTest: false })));
+    sk.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pos), new THREE.LineBasicMaterial({ color: 0xb5c2ae, depthTest: false })));
     const sph = new THREE.SphereGeometry(0.012, 12, 8);
     const sm = new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false });
     for (const i of [0, 7, 8, 11, 12, 13, 14, 23, 24, 25, 26, 27, 28]) { const m = new THREE.Mesh(sph, sm); m.position.copy(L[i]); sk.add(m); }
     if (rec.com) {
-      const c = new THREE.Mesh(new THREE.SphereGeometry(0.02, 16, 10), new THREE.MeshBasicMaterial({ color: 0xe2ab4c, depthTest: false }));
+      const c = new THREE.Mesh(new THREE.SphereGeometry(0.02, 16, 10), new THREE.MeshBasicMaterial({ color: 0xe0a64b, depthTest: false }));
       c.position.set(rec.com.x, rec.com.y, rec.com.z); sk.add(c);
-      sk.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([c.position.clone(), new THREE.Vector3(rec.com.x, 0, rec.com.z)]), new THREE.LineDashedMaterial({ color: 0xe2ab4c, dashSize: 0.03, gapSize: 0.02, depthTest: false })).computeLineDistances());
+      sk.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([c.position.clone(), new THREE.Vector3(rec.com.x, 0, rec.com.z)]), new THREE.LineDashedMaterial({ color: 0xe0a64b, dashSize: 0.03, gapSize: 0.02, depthTest: false })).computeLineDistances());
     }
     sk.renderOrder = 10;
     scene.add(sk);
@@ -213,7 +213,7 @@ export class Viewer {
     for (const [k, s] of Object.entries(rec.sections)) {
       const pts = s.outline.map(([x, z]) => new THREE.Vector3(x, s.y, z));
       pts.push(pts[0]);
-      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xf2c26b, depthTest: false, transparent: true, opacity: 0.9 }));
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xd39274, depthTest: false, transparent: true, opacity: 0.9 }));
       line.renderOrder = 11;
       rings.add(line); this.ringByKey[k] = line;
     }
@@ -258,7 +258,7 @@ export class Viewer {
     this.render();
   }
   highlight(key) {
-    for (const [k, l] of Object.entries(this.ringByKey)) { l.material.color.set(k === key ? 0xffffff : 0xf2c26b); l.material.opacity = key && k !== key ? 0.35 : 0.9; }
+    for (const [k, l] of Object.entries(this.ringByKey)) { l.material.color.set(k === key ? 0xffffff : 0xd39274); l.material.opacity = key && k !== key ? 0.35 : 0.9; }
     this.render();
   }
   render() {

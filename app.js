@@ -393,7 +393,7 @@ function drawSkeleton(ctx, p, w, tone) {
   ctx.restore();
 }
 
-const STATUS_RGB = { good: '#38b37f', mild: '#e5a823', notable: '#e2553d' };
+const STATUS_RGB = { good: '#7FB37E', mild: '#E0A64B', notable: '#EE6D58' };
 
 function statusFor(report, key, view) {
   for (const r of report.regions) for (const m of r.metrics) if (m.key === key && (m.view === view || (m.view === 'frontback' && view !== 'side'))) return m.status;
@@ -410,7 +410,7 @@ function annotatedImage(capIn, view, report) {
       c.width = cap.w; c.height = cap.h;
       const ctx = c.getContext('2d');
       if (cap.image) ctx.drawImage(img, 0, 0);
-      else { ctx.fillStyle = '#20302d'; ctx.fillRect(0, 0, c.width, c.height); drawGrid(ctx, c.width, c.height); }
+      else { ctx.fillStyle = '#1E2621'; ctx.fillRect(0, 0, c.width, c.height); drawGrid(ctx, c.width, c.height); }
       ctx.fillStyle = 'rgba(10,18,16,.28)';
       ctx.fillRect(0, 0, c.width, c.height);
       const p = toPixels(cap.landmarks, cap.w, cap.h);
@@ -440,7 +440,7 @@ function annotatedImage(capIn, view, report) {
       } else {
         const pl = report.plumb;
         if (pl) {
-          line({ x: pl.x, y: cap.h }, { x: pl.x, y: 0 }, '#e0a84a', [lw * 3, lw * 1.5]);
+          line({ x: pl.x, y: cap.h }, { x: pl.x, y: 0 }, '#E0A64B', [lw * 3, lw * 1.5]);
           const n = pl.nearLeft;
           const pts = (n ? [7, 11, 23, 25, 27] : [8, 12, 24, 26, 28]).map((i) => p[i]);
           ctx.save(); ctx.strokeStyle = '#fff'; ctx.lineWidth = lw * 0.8; ctx.beginPath();

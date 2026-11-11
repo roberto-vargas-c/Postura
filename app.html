@@ -2,57 +2,63 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style id="app-style">
 /* Layout: one narrow column like a clinician's clipboard; photos sit on a plumb-line grid. */
 :root {
-  --paper: #eef2f0; --surface: #ffffff; --ink: #14211e; --muted: #56655f; --line: #d3dcd8;
-  --accent: #1d6b58; --accent-ink: #ffffff; --brass: #a8721a;
-  --good: #23885d; --mild: #b07c0c; --notable: #c0412b;
-  --good-bg: #e2f2ea; --mild-bg: #f7eed6; --notable-bg: #f8e3de;
-  --stage: #17221f;
-  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --r: 14px;
+  --paper: #EFEBE4; --surface: #F8F6F2; --ink: #23302A; --muted: #6D7468; --line: #DCD7CD;
+  --accent: #9C5A3C; --accent-ink: #FBF7F2; --accent-soft: #EBDCD2; --brass: #B9822A;
+  --brand: #2F4A3B; --brand-ink: #F3F1EA; --sand: #B5C2AE;
+  --good: #5B8C5A; --mild: #B9822A; --notable: #BF4530;
+  --good-bg: #E1E9DC; --mild-bg: #F2E6D0; --notable-bg: #F4DDD5;
+  --stage: #1E2621;
+  --shadow: 0 1px 2px rgba(30,45,35,.06), 0 8px 24px -12px rgba(30,45,35,.25);
+  --f-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 18px;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --paper: #0e1513; --surface: #16201d; --ink: #e4ece9; --muted: #97a8a2; --line: #283632;
-  --accent: #5cc2a3; --accent-ink: #08130f; --brass: #e2ab4c;
-  --good: #52c48e; --mild: #e3b23e; --notable: #ef7a62;
-  --good-bg: #15302a; --mild-bg: #33290f; --notable-bg: #3a1c16; --stage: #0a100e; color-scheme: dark } }
+  --paper: #141A16; --surface: #1D241F; --ink: #E7EBE3; --muted: #9BA597; --line: #313A33;
+  --accent: #D39274; --accent-ink: #22140D; --accent-soft: #3A2A21; --brass: #E0A64B;
+  --brand: #B8CDB8; --brand-ink: #14201A; --sand: #9DAE95;
+  --good: #7FB37E; --mild: #E0A64B; --notable: #EE6D58;
+  --good-bg: #1F2E22; --mild-bg: #33291A; --notable-bg: #3A201B; --stage: #0F1310;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6); color-scheme: dark } }
 :root[data-theme="dark"] {
-  --paper: #0e1513; --surface: #16201d; --ink: #e4ece9; --muted: #97a8a2; --line: #283632;
-  --accent: #5cc2a3; --accent-ink: #08130f; --brass: #e2ab4c;
-  --good: #52c48e; --mild: #e3b23e; --notable: #ef7a62;
-  --good-bg: #15302a; --mild-bg: #33290f; --notable-bg: #3a1c16; --stage: #0a100e; color-scheme: dark }
+  --paper: #141A16; --surface: #1D241F; --ink: #E7EBE3; --muted: #9BA597; --line: #313A33;
+  --accent: #D39274; --accent-ink: #22140D; --accent-soft: #3A2A21; --brass: #E0A64B;
+  --brand: #B8CDB8; --brand-ink: #14201A; --sand: #9DAE95;
+  --good: #7FB37E; --mild: #E0A64B; --notable: #EE6D58;
+  --good-bg: #1F2E22; --mild-bg: #33291A; --notable-bg: #3A201B; --stage: #0F1310;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6); color-scheme: dark }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; }
+body { background: var(--paper); background-image: radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb, var(--sand) 22%, transparent), transparent 70%); background-attachment: fixed; color: var(--ink); font-family: var(--f-body); font-size: 15.5px; line-height: 1.5; }
 .wrap { max-width: 760px; margin: 0 auto; padding-block: 12px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
-h1, h2, h3 { font-family: var(--f-display); line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
-h1 { font-size: clamp(2rem, 7vw, 3.1rem); font-weight: 700; }
-h2 { font-size: clamp(1.6rem, 5vw, 2.1rem); font-weight: 700; }
-h3 { font-size: 1.2rem; font-weight: 700; }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.01em; font-weight: 400; }
+h1 { font-size: clamp(2rem, 7vw, 3rem); font-weight: 400; color: var(--brand); }
+h2 { font-size: clamp(1.6rem, 5vw, 2.1rem); font-weight: 400; }
+h3 { font-size: 1.25rem; font-weight: 400; }
 p { margin: 0; }
 .muted { color: var(--muted); }
-.eyebrow { font-family: var(--f-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); }
+.eyebrow { font-family: var(--f-body); font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .09em; color: var(--accent); }
 button, .btn { font: inherit; cursor: pointer; }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 700; text-decoration: none; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; text-decoration: none; }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn:focus-visible, .link:focus-visible, input:focus-visible, .hist-item:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
 .link { background: none; border: 0; color: var(--accent); text-decoration: underline; padding: 4px 0; font: inherit; justify-self: start; }
 .row { display: flex; flex-wrap: wrap; gap: 10px; }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding: 20px; display: grid; gap: 14px; }
 
 /* Top bar */
 .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-#brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; }
+#brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 400; font-size: 1.5rem; color: var(--brand); }
 .bob { width: 18px; height: 30px; position: relative; display: inline-block; }
 .bob::before { content: ""; position: absolute; left: 8px; top: 0; width: 2px; height: 14px; background: var(--brass); }
-.bob::after { content: ""; position: absolute; left: 2px; top: 13px; width: 14px; height: 16px; background: var(--brass); clip-path: polygon(50% 100%, 0 30%, 15% 0, 85% 0, 100% 30%); }
+.bob::after { content: ""; position: absolute; left: 2px; top: 13px; width: 14px; height: 16px; background: var(--accent); clip-path: polygon(50% 100%, 0 30%, 15% 0, 85% 0, 100% 30%); }
 #steps { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0; font-family: var(--f-mono); font-size: .72rem; color: var(--muted); }
 #steps li { padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
 #steps li.done { color: var(--accent); border-color: var(--accent); }
@@ -93,7 +99,7 @@ button, .btn { font: inherit; cursor: pointer; }
 .stage.mirror video, .stage.mirror canvas { transform: scaleX(-1); }
 .stage .frame { position: absolute; inset: 4% 22%; border: 2px dashed rgba(255,255,255,.35); border-radius: 18px; pointer-events: none; }
 #live-status { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 1.05rem; background: rgba(0,0,0,.66); color: #fff; white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
-#live-status[data-tone="ok"] { background: #1f7d5c; }
+#live-status[data-tone="ok"] { background: #2F4A3B; }
 .review-wrap canvas { width: 100%; height: auto; max-height: 70vh; object-fit: contain; border-radius: var(--r); background: var(--stage); display: block; }
 .issues { padding: 14px 16px; border-radius: 10px; display: grid; gap: 6px; }
 .issues ul { margin: 0; padding-left: 1.2em; }
@@ -123,7 +129,7 @@ button, .btn { font: inherit; cursor: pointer; }
 .gauge { width: 100%; height: auto; }
 .g-track { fill: none; stroke: var(--line); stroke-width: 9; }
 .g-fill { fill: none; stroke: var(--accent); stroke-width: 9; stroke-linecap: round; }
-.g-num { font-family: var(--f-display); font-weight: 700; font-size: 28px; fill: var(--ink); text-anchor: middle; dominant-baseline: middle; }
+.g-num { font-family: var(--f-display); font-weight: 400; font-size: 28px; fill: var(--ink); text-anchor: middle; dominant-baseline: middle; }
 .g-sub { font-family: var(--f-mono); font-size: 8px; fill: var(--muted); text-anchor: middle; }
 .disclaimer { font-size: .9rem; color: var(--muted); border-left: 3px solid var(--brass); padding: 4px 0 4px 14px; }
 .regions { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
@@ -134,7 +140,7 @@ button, .btn { font: inherit; cursor: pointer; }
 .chip { font-family: var(--f-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
 .chip.good { background: var(--good-bg); color: var(--good); } .chip.mild { background: var(--mild-bg); color: var(--mild); } .chip.notable { background: var(--notable-bg); color: var(--notable); } .chip.none { background: var(--paper); color: var(--muted); }
 .r-score { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; }
-.r-score .num { font-family: var(--f-display); font-weight: 700; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.r-score .num { font-family: var(--f-display); font-weight: 400; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
 .r-score .bar { height: 8px; border-radius: 99px; background: var(--paper); overflow: hidden; }
 .r-score .bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
 .delta { grid-column: 1 / -1; font-family: var(--f-mono); font-size: .75rem; color: var(--muted); }
@@ -165,7 +171,7 @@ button, .btn { font: inherit; cursor: pointer; }
 /* History */
 .hist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 .hist-item { width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--ink); }
-.h-score { font-family: var(--f-display); font-weight: 700; font-size: 1.3rem; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; border: 3px solid var(--line); }
+.h-score { font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; border: 3px solid var(--line); }
 .h-score.good { border-color: var(--good); } .h-score.mild { border-color: var(--mild); } .h-score.notable { border-color: var(--notable); }
 .h-text { display: grid; min-width: 0; } .h-text span { color: var(--muted); font-size: .85rem; }
 .h-bars { display: flex; gap: 3px; } .h-bars i { width: 6px; height: 22px; border-radius: 3px; background: var(--line); }
@@ -197,7 +203,7 @@ button, .btn { font: inherit; cursor: pointer; }
 #report3d-body { display: grid; gap: 18px; }
 .v3d, .vsec, .hsec, .meas-sec { display: grid; gap: 10px; }
 .v3d-head { display: grid; gap: 4px; }
-.v3d-stage { border-radius: var(--r); overflow: hidden; background: #18221f; min-height: 380px; touch-action: none; }
+.v3d-stage { border-radius: var(--r); overflow: hidden; background: var(--stage); min-height: 380px; touch-action: none; }
 .v3d-stage canvas { display: block; width: 100% !important; }
 .v3d-shot { width: 100%; border-radius: var(--r); }
 .v3d-tools { justify-content: space-between; }
@@ -273,6 +279,7 @@ button, .btn { font: inherit; cursor: pointer; }
           <p class="lede">Three guided photos, or a full 3D scan of your body. Postura finds your joints and checks how each region lines up against level and plumb.</p>
         </div>
         <svg class="hero-fig" viewBox="0 0 120 240" aria-hidden="true">
+          <rect x="4" y="8" width="112" height="226" rx="56" fill="var(--sand)" fill-opacity=".45"/>
           <line x1="60" y1="0" x2="60" y2="240" stroke="var(--brass)" stroke-width="2" stroke-dasharray="6 4"/>
           <circle cx="62" cy="30" r="14" fill="none" stroke="var(--ink)" stroke-width="3"/>
           <path d="M34 62 L88 60 M61 46 L61 120 M40 120 L82 118 M46 120 L44 176 L46 228 M76 119 L78 176 L76 228 M34 62 L28 118 M88 60 L94 118" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
@@ -351,13 +358,13 @@ button, .btn { font: inherit; cursor: pointer; }
           <ol id="cap-lines"></ol>
           <div>
             <div class="guide-fig" data-view="front">
-              <svg viewBox="0 0 80 160" aria-label="Stand facing the camera"><g fill="none" stroke="#e6efe9" stroke-width="3" stroke-linecap="round"><circle cx="40" cy="18" r="10"/><path d="M22 40 L58 40 M40 28 L40 82 M28 82 L52 82 M30 82 L29 152 M50 82 L51 152 M22 40 L18 84 M58 40 L62 84"/></g><line x1="40" y1="2" x2="40" y2="158" stroke="#e2ab4c" stroke-dasharray="4 3"/></svg>
+              <svg viewBox="0 0 80 160" aria-label="Stand facing the camera"><g fill="none" stroke="#F3F1EA" stroke-width="3" stroke-linecap="round"><circle cx="40" cy="18" r="10"/><path d="M22 40 L58 40 M40 28 L40 82 M28 82 L52 82 M30 82 L29 152 M50 82 L51 152 M22 40 L18 84 M58 40 L62 84"/></g><line x1="40" y1="2" x2="40" y2="158" stroke="#E0A64B" stroke-dasharray="4 3"/></svg>
             </div>
             <div class="guide-fig" data-view="side" hidden>
-              <svg viewBox="0 0 80 160" aria-label="Stand side-on to the camera"><g fill="none" stroke="#e6efe9" stroke-width="3" stroke-linecap="round"><circle cx="42" cy="18" r="10"/><path d="M40 28 L40 82 M40 40 L40 84 M40 82 L40 152 M40 152 L52 152"/><path d="M50 16 L54 19"/></g><line x1="42" y1="2" x2="42" y2="158" stroke="#e2ab4c" stroke-dasharray="4 3"/></svg>
+              <svg viewBox="0 0 80 160" aria-label="Stand side-on to the camera"><g fill="none" stroke="#F3F1EA" stroke-width="3" stroke-linecap="round"><circle cx="42" cy="18" r="10"/><path d="M40 28 L40 82 M40 40 L40 84 M40 82 L40 152 M40 152 L52 152"/><path d="M50 16 L54 19"/></g><line x1="42" y1="2" x2="42" y2="158" stroke="#E0A64B" stroke-dasharray="4 3"/></svg>
             </div>
             <div class="guide-fig" data-view="back" hidden>
-              <svg viewBox="0 0 80 160" aria-label="Stand with your back to the camera"><g fill="none" stroke="#e6efe9" stroke-width="3" stroke-linecap="round"><circle cx="40" cy="18" r="10" fill="#e6efe9" fill-opacity=".25"/><path d="M22 40 L58 40 M40 28 L40 82 M28 82 L52 82 M30 82 L29 152 M50 82 L51 152 M22 40 L18 84 M58 40 L62 84"/></g><line x1="40" y1="2" x2="40" y2="158" stroke="#e2ab4c" stroke-dasharray="4 3"/></svg>
+              <svg viewBox="0 0 80 160" aria-label="Stand with your back to the camera"><g fill="none" stroke="#F3F1EA" stroke-width="3" stroke-linecap="round"><circle cx="40" cy="18" r="10" fill="#F3F1EA" fill-opacity=".25"/><path d="M22 40 L58 40 M40 28 L40 82 M28 82 L52 82 M30 82 L29 152 M50 82 L51 152 M22 40 L18 84 M58 40 L62 84"/></g><line x1="40" y1="2" x2="40" y2="158" stroke="#E0A64B" stroke-dasharray="4 3"/></svg>
             </div>
           </div>
         </div>
